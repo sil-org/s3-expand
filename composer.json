@@ -1,5 +1,5 @@
 {
-    "name": "silinternational/s3-expand",
+    "name": "sil-org/s3-expand",
     "description": "CLI tool to expand files from S3 into a Docker container",
     "type": "library",
     "keywords": [
@@ -10,7 +10,7 @@
         "elastic container service",
         "amazon web services"
     ],
-    "homepage": "https://github.com/silinternational/s3-expand",
+    "homepage": "https://github.com/sil-org/s3-expand",
     "license": "MIT",
     "bin": [
         "s3-expand"
