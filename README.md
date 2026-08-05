@@ -1,12 +1,6 @@
 s3-expand
 =========
 
-**Version 2.0 Breaking Changes:**
-- Now uses the official AWS CLI (`aws s3`) instead of `s3cmd`
-- Removed support for custom environment variables `EXPAND_S3_KEY` and `EXPAND_S3_SECRET`
-- Use standard AWS environment variables for authentication (e.g., `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`)
-- AWS CLI credentials can be configured through any standard AWS method (environment variables, credentials file, IAM roles, etc.)
-
 `s3-expand` is a wrapper bash shell script, intended for use in a docker
 container. It provides functionality to generate and edit files:
 
@@ -108,20 +102,16 @@ S3 Access
 ---------
 
 Three modes are available for pulling data from Amazon S3: file, sync, and
-archive. 
-
-**Version 2.0+** uses the official AWS CLI and supports all standard AWS authentication methods:
+archive. The AWS CLI (v2.0+: uses the official `aws` command instead of `s3cmd`) must be 
+installed and credentials configured before running s3-expand. Standard AWS authentication 
+methods are supported:
 - Environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`
 - AWS credentials file (`~/.aws/credentials`)
 - IAM roles (when running on EC2, ECS, or other AWS services)
 - Any other AWS CLI-supported authentication method
 
-The AWS CLI must be installed and credentials configured before running s3-expand.
 After use, the script does not modify or scrub AWS credentials from the environment
 (they are managed by the AWS CLI and standard AWS authentication mechanisms).
-
-**Note:** Version 1.x used custom environment variables `EXPAND_S3_KEY` and `EXPAND_S3_SECRET`.
-These are no longer supported in version 2.0+.
 
 `EXPAND_S3_FILES`
 ----------------
@@ -227,10 +217,10 @@ root; the included Dockerfile is for this purpose.
 
 Create a file called `env.local` with your AWS credentials and test path:
 
-    AWS_ACCESS_KEY_ID=OTGJTJBPGPXVHUKOUBTY
-    AWS_SECRET_ACCESS_KEY=NUId1Ar6nnQ/ah4Y27q5bskVHxhJHPipvC3kEitb
+    AWS_ACCESS_KEY_ID=<your-access-key-id>
+    AWS_SECRET_ACCESS_KEY=<your-secret-access-key>
 
-    S3_TEST_PATH=random-bucket-OyQ3Qu/randomfolder-xtyD2C
+    S3_TEST_PATH=<bucket-name>/<test-folder-path>
 
 Then, to run the tests, use these commands:
 
@@ -239,6 +229,3 @@ Then, to run the tests, use these commands:
 
 The S3 folder formed from the url `s3://$S3_TEST_PATH` will be used as a staging
 area for testing the wrapper modes that pull from S3.
-
-**Note:** Version 1.x used `EXPAND_S3_KEY` and `EXPAND_S3_SECRET` environment variables.
-For version 2.0+, use the standard AWS environment variables as shown above.
