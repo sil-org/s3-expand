@@ -3,9 +3,9 @@ test_succeeded=true
 
 if . ../check-s3-creds; then
   chmod -R 664 ./originals/
-  #   SEE MAN PAGE FOR S3CMD; TRAILING SLASHES ARE SIGNIFICANT
-  s3cmd del s3://"$S3_TEST_PATH"/s3-sync
-  s3cmd sync ./originals/ s3://"$S3_TEST_PATH"/s3-sync/
+  #   TRAILING SLASHES ARE SIGNIFICANT FOR AWS S3 SYNC
+  aws s3 rm s3://"$S3_TEST_PATH"/s3-sync --recursive
+  aws s3 sync ./originals/ s3://"$S3_TEST_PATH"/s3-sync/
 
   EXPAND_S3_FOLDERS="  $S3_TEST_PATH/s3-sync/|./comparedir"
   EXPAND_S3_FOLDERS+=" $S3_TEST_PATH/s3-sync/|./newdir/comparedir"

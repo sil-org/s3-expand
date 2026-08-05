@@ -4,7 +4,7 @@ test_succeeded=true
 if . ../check-s3-creds; then
   # First, prepare the testing environment
   for file in testfileA testfileB testfileC; do
-    s3cmd put ./$file s3://"$S3_TEST_PATH"/$file
+    aws s3 cp ./$file s3://"$S3_TEST_PATH"/$file
   done
 
   EXPAND_S3_FILES=" $S3_TEST_PATH/testfileA|./fileA"
