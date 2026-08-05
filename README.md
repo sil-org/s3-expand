@@ -1,6 +1,12 @@
 s3-expand
 =========
 
+**Version 2.0 Breaking Changes:**
+- Now uses the official AWS CLI (`aws s3`) instead of `s3cmd`
+- Removed support for custom environment variables `EXPAND_S3_KEY` and `EXPAND_S3_SECRET`
+- Use standard AWS environment variables for authentication (e.g., `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`)
+- AWS CLI credentials can be configured through any standard AWS method (environment variables, credentials file, IAM roles, etc.)
+
 `s3-expand` is a wrapper bash shell script, intended for use in a docker
 container. It provides functionality to generate and edit files:
 
@@ -102,15 +108,20 @@ S3 Access
 ---------
 
 Three modes are available for pulling data from Amazon S3: file, sync, and
-archive. Each require two other environmental variables to be set in order to
-work. They are:
+archive. 
 
-  * `EXPAND_S3_KEY`
-  * `EXPAND_S3_SECRET`
+**Version 2.0+** uses the official AWS CLI and supports all standard AWS authentication methods:
+- Environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`
+- AWS credentials file (`~/.aws/credentials`)
+- IAM roles (when running on EC2, ECS, or other AWS services)
+- Any other AWS CLI-supported authentication method
 
-They must be set to the AWS access key, and AWS secret key, respectively, which
-have sufficient permissions to access the specified S3 targets. After use, they
-will be scrubbed from the environment.
+The AWS CLI must be installed and credentials configured before running s3-expand.
+After use, the script does not modify or scrub AWS credentials from the environment
+(they are managed by the AWS CLI and standard AWS authentication mechanisms).
+
+**Note:** Version 1.x used custom environment variables `EXPAND_S3_KEY` and `EXPAND_S3_SECRET`.
+These are no longer supported in version 2.0+.
 
 `EXPAND_S3_FILES`
 ----------------
@@ -214,10 +225,10 @@ A simple shell testing framework is included in `tests` for verifying the
 operation of the wrapper. It is designed to be run from within a container as
 root; the included Dockerfile is for this purpose.
 
-Just create an file called `env.local` with contents similar to:
+Create a file called `env.local` with your AWS credentials and test path:
 
-    EXPAND_S3_KEY=OTGJTJBPGPXVHUKOUBTY
-    EXPAND_S3_SECRET=NUId1Ar6nnQ/ah4Y27q5bskVHxhJHPipvC3kEitb
+    AWS_ACCESS_KEY_ID=OTGJTJBPGPXVHUKOUBTY
+    AWS_SECRET_ACCESS_KEY=NUId1Ar6nnQ/ah4Y27q5bskVHxhJHPipvC3kEitb
 
     S3_TEST_PATH=random-bucket-OyQ3Qu/randomfolder-xtyD2C
 
@@ -228,3 +239,6 @@ Then, to run the tests, use these commands:
 
 The S3 folder formed from the url `s3://$S3_TEST_PATH` will be used as a staging
 area for testing the wrapper modes that pull from S3.
+
+**Note:** Version 1.x used `EXPAND_S3_KEY` and `EXPAND_S3_SECRET` environment variables.
+For version 2.0+, use the standard AWS environment variables as shown above.
