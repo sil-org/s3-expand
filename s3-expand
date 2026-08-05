@@ -325,8 +325,8 @@ if [ $AWSCLI ]; then
     # If object has no trailing slash, sync the folder itself (append folder name to target)
     case "$object" in
       */) ;;
-      *)  foldername=$( "$BASENAME" $object )
-          targetfolder="$targetfolder/$foldername/"
+      *)  foldername=$( "$BASENAME" "$object" )
+          targetfolder="$targetfolder/$foldername"
           object="$object/" ;;
     esac
 
