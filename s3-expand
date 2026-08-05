@@ -322,11 +322,19 @@ if [ $AWSCLI ]; then
     fi
 
 
+    # If object has no trailing slash, sync the folder itself (append folder name to target)
+    case "$object" in
+      */) ;;
+      *)  foldername=$( "$BASENAME" $object )
+          targetfolder="$targetfolder/$foldername/"
+          object="$object/" ;;
+    esac
+
     # Create the containing directory, if necessary
-    "$MKDIR" -p $targetfolder/
+    "$MKDIR" -p $targetfolder
 
     # Run the extraction
-    "$AWSCLI" s3 sync s3://$object $targetfolder/
+    "$AWSCLI" s3 sync s3://$object $targetfolder
 
     # Set the file and directory ownership, if applicable
     if [ $owner ]; then
