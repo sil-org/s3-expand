@@ -4,8 +4,8 @@ on:
   push:
 
 env:
-  EXPAND_S3_KEY: ${{ secrets.EXPAND_S3_KEY }}
-  EXPAND_S3_SECRET: ${{ secrets.EXPAND_S3_SECRET }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   S3_TEST_PATH: ${{ secrets.S3_TEST_PATH }}
 
 jobs:
@@ -18,6 +18,6 @@ jobs:
       - name: Run tests
         run: |
           sudo apt-get update
-          sudo apt-get install -y s3cmd fakeroot
+          sudo apt-get install -y fakeroot
           cd tests
           fakeroot ./run-tests.sh

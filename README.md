@@ -102,15 +102,16 @@ S3 Access
 ---------
 
 Three modes are available for pulling data from Amazon S3: file, sync, and
-archive. Each require two other environmental variables to be set in order to
-work. They are:
+archive. The AWS CLI (v2.0+: uses the official `aws` command instead of `s3cmd`) must be 
+installed and credentials configured before running s3-expand. Standard AWS authentication 
+methods are supported:
+- Environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`
+- AWS credentials file (`~/.aws/credentials`)
+- IAM roles (when running on EC2, ECS, or other AWS services)
+- Any other AWS CLI-supported authentication method
 
-  * `EXPAND_S3_KEY`
-  * `EXPAND_S3_SECRET`
-
-They must be set to the AWS access key, and AWS secret key, respectively, which
-have sufficient permissions to access the specified S3 targets. After use, they
-will be scrubbed from the environment.
+After use, the script does not modify or scrub AWS credentials from the environment
+(they are managed by the AWS CLI and standard AWS authentication mechanisms).
 
 `EXPAND_S3_FILES`
 ----------------
@@ -214,12 +215,12 @@ A simple shell testing framework is included in `tests` for verifying the
 operation of the wrapper. It is designed to be run from within a container as
 root; the included Dockerfile is for this purpose.
 
-Just create an file called `env.local` with contents similar to:
+Create a file called `env.local` with your AWS credentials and test path:
 
-    EXPAND_S3_KEY=OTGJTJBPGPXVHUKOUBTY
-    EXPAND_S3_SECRET=NUId1Ar6nnQ/ah4Y27q5bskVHxhJHPipvC3kEitb
+    AWS_ACCESS_KEY_ID=<your-access-key-id>
+    AWS_SECRET_ACCESS_KEY=<your-secret-access-key>
 
-    S3_TEST_PATH=random-bucket-OyQ3Qu/randomfolder-xtyD2C
+    S3_TEST_PATH=<bucket-name>/<test-folder-path>
 
 Then, to run the tests, use these commands:
 
